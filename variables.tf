@@ -10,6 +10,11 @@ variable "kind_cluster_config_path" {
   default     = "~/.kube/config"
 }
 
+variable "node_image" {
+  type    = string
+  default = "kindest/node:v1.29.2"
+}
+
 variable "ingress_nginx_helm_version" {
   type        = string
   description = "The Helm version for the nginx ingress controller."
@@ -27,3 +32,79 @@ variable "ingress_nginx_namespace" {
   description = "The nginx ingress namespace (it will be created if needed)."
   default     = "ingress-nginx"
 }
+
+variable "airflow_executor" {
+  type    = string
+  default = "KubernetesExecutor"
+}
+
+variable "airflow_user_email" {
+  type    = string
+  default = "admin@example.com"
+}
+
+variable "airflow_first_name" {
+  type    = string
+  default = "admin"
+}
+
+variable "airflow_last_name" {
+  type    = string
+  default = "user"
+}
+
+variable "airflow_username" {
+  type    = string
+  default = "admin"
+}
+
+variable "airflow_password" {
+  type    = string
+  default = "admin"
+}
+
+variable "airflow_hosts" {
+  type    = list(any)
+  default = ["airflow.coutinho.local"]
+}
+
+variable "git_sync_enabled" {
+  type    = string
+  default = "True"
+}
+
+variable "git_sync_repo" {
+  type    = string
+  default = "ssh://git@gitlab.gazeus.com/bi/airflow/airflow-dags.git"
+}
+
+variable "git_sync_branch" {
+  type    = string
+  default = "master"
+}
+
+variable "git_sync_period" {
+  type    = string
+  default = "3600s"
+}
+
+variable "git_sync_rev" {
+  type    = string
+  default = "HEAD"
+}
+
+variable "git_sync_depth" {
+  type    = number
+  default = 1
+}
+
+variable "git_sync_max_failures" {
+  type    = number
+  default = 5
+}
+
+variable "git_sync_sub_path" {
+  type    = string
+  default = ""
+}
+
