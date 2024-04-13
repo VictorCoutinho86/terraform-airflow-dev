@@ -2,13 +2,14 @@ provider "kind" {
 }
 
 provider "kubernetes" {
+  host        = kind_cluster.default.endpoint
   config_path = pathexpand(var.kind_cluster_config_path)
 }
 
 resource "kind_cluster" "default" {
   name           = var.kind_cluster_name
   wait_for_ready = true
-  node_image     = "kindest/node:v1.29.2"
+  node_image     = var.node_image
 
   kind_config {
     kind        = "Cluster"
