@@ -132,6 +132,16 @@ resource "helm_release" "airflow" {
     value = var.git_sync_sub_path
   }
 
+  set {
+    name = "extraEnvFrom"
+    value = yamlencode(
+      [
+        { "secretRef" : { "name" : kubernetes_secret.slack_token.metadata[0].name } },
+        { "configMapRef" : { "name" : kubernetes_config_map.extra_env.metadata[0].name } }
+      ]
+    )
+  }
+
   depends_on = [null_resource.wait_for_ingress_nginx]
 }
 
@@ -155,6 +165,37 @@ resource "kubernetes_secret" "ssh_key_secret" {
   }
 
   type = "Opaque"
+
+  depends_on = [kubernetes_namespace.airflow]
+}
+
+resource "kubernetes_secret" "slack_token" {
+  metadata {
+    name      = "airflow-slack-token"
+    namespace = kubernetes_namespace.airflow.metadata[0].name
+  }
+
+  data = {
+    "AIRFLOW_CONN_SLACK_API_DEFAULT" = var.slack_token
+  }
+
+  type = "Opaque"
+
+  depends_on = [kubernetes_namespace.airflow]
+}
+
+resource "kubernetes_config_map" "extra_env" {
+  metadata {
+    name      = "airflow-extra-env"
+    namespace = kubernetes_namespace.airflow.metadata[0].name
+  }
+
+  data = {
+    "AIRFLOW__CORE__DONOT_PICKLE"                        = "False"
+    "AIRFLOW__CORE__ENABLE_XCOM_PICKLING"                = "True"
+    "AIRFLOW__WEBSERVER__SHOW_TRIGGER_FORM_IF_NO_PARAMS" = "True"
+    "AIRFLOW__WEBSERVER__EXPOSE_CONFIG"                  = "True"
+  }
 
   depends_on = [kubernetes_namespace.airflow]
 }
