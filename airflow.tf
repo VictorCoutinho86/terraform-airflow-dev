@@ -150,7 +150,8 @@ resource "kubernetes_secret" "ssh_key_secret" {
   }
 
   data = {
-    "id_rsa" = "${file("~/.ssh/id_rsa")}"
+    "gitSshKey"      = "${file("~/.ssh/airflowsshkey")}"
+    "id_ed25519.pub" = "${file("~/.ssh/airflowsshkey.pub")}"
   }
 
   type = "Opaque"
