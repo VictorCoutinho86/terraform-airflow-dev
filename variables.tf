@@ -35,7 +35,7 @@ variable "ingress_nginx_namespace" {
 
 variable "airflow_executor" {
   type    = string
-  default = "KubernetesExecutor"
+  default = "CeleryExecutor"
 }
 
 variable "airflow_user_email" {
@@ -75,7 +75,7 @@ variable "git_sync_enabled" {
 
 variable "git_sync_repo" {
   type    = string
-  default = "ssh://git@gitlab.gazeus.com/bi/airflow/airflow-dags.git"
+  default = ""
 }
 
 variable "git_sync_branch" {
@@ -85,7 +85,7 @@ variable "git_sync_branch" {
 
 variable "git_sync_period" {
   type    = string
-  default = "3600s"
+  default = "600s"
 }
 
 variable "git_sync_rev" {
@@ -100,11 +100,10 @@ variable "git_sync_depth" {
 
 variable "git_sync_max_failures" {
   type    = number
-  default = 5
+  default = 0
 }
 
 variable "git_sync_sub_path" {
   type    = string
   default = ""
 }
-
