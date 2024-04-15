@@ -107,3 +107,8 @@ variable "git_sync_sub_path" {
   type    = string
   default = ""
 }
+
+variable "slack_token" {
+  type    = string
+  default = ""
+}
