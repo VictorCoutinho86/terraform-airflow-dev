@@ -8,16 +8,26 @@ resource "helm_release" "airflow" {
   wait             = false
   create_namespace = true
   force_update     = true
+  recreate_pods    = true
   cleanup_on_fail  = true
   timeout          = 1500
 
+  set {
+    name  = "airflowVersion"
+    value = var.airflow_version
+  }
+
+  set {
+    name  = "defaultAirflowTag"
+    value = var.airflow_tag
+  }
   set {
     name  = "ingress.web.enabled"
     value = "true"
   }
 
   set {
-    name  = "exeutor"
+    name  = "executor"
     value = var.airflow_executor
   }
 
@@ -42,8 +52,13 @@ resource "helm_release" "airflow" {
   }
 
   set {
+    name  = "fernetKey"
+    value = var.fernet_key
+  }
+
+  set {
     name  = "webserverSecretKey"
-    value = "8996c19d1a7080b5557727b6"
+    value = random_id.webserver_secret_key.hex
   }
 
   set {
@@ -142,6 +157,31 @@ resource "helm_release" "airflow" {
     )
   }
 
+  set {
+    name  = "ingress.web.tls.enabled"
+    value = "True"
+  }
+
+  set {
+    name  = "ingress.web.tls.enabled"
+    value = kubernetes_secret.my_certificate.metadata[0].name
+  }
+
+  set {
+    name  = "webserver.replicas"
+    value = 2
+  }
+
+  set {
+    name  = "scheduler.replicas"
+    value = 2
+  }
+
+  set {
+    name  = "triggerer.replicas"
+    value = 2
+  }
+
   depends_on = [null_resource.wait_for_ingress_nginx]
 }
 
@@ -195,7 +235,24 @@ resource "kubernetes_config_map" "extra_env" {
     "AIRFLOW__CORE__ENABLE_XCOM_PICKLING"                = "True"
     "AIRFLOW__WEBSERVER__SHOW_TRIGGER_FORM_IF_NO_PARAMS" = "True"
     "AIRFLOW__WEBSERVER__EXPOSE_CONFIG"                  = "True"
+    "AIRFLOW_CONN_MESSAGES"                              = "${file("messages.txt")}"
   }
 
   depends_on = [kubernetes_namespace.airflow]
+}
+
+resource "random_id" "webserver_secret_key" {
+  byte_length = 16
+}
+
+resource "kubernetes_secret" "my_certificate" {
+  metadata {
+    name      = "certificate"
+    namespace = kubernetes_namespace.airflow.metadata[0].name
+  }
+  data = {
+    "tls.crt" = "${file("cert.pem")}"
+    "tls.key" = "${file("key.pem")}"
+  }
+  type = "kubernetes.io/tls"
 }
