@@ -21,6 +21,16 @@ variable "ingress_nginx_helm_version" {
   default     = "4.10.0"
 }
 
+variable "airflow_version" {
+  type    = string
+  default = "2.9.0"
+}
+
+variable "airflow_tag" {
+  type    = string
+  default = "2.9.0-python3.12"
+}
+
 variable "airflow_chart_version" {
   type        = string
   description = "The Helm version for the nginx ingress controller."
@@ -65,7 +75,7 @@ variable "airflow_password" {
 
 variable "airflow_hosts" {
   type    = list(any)
-  default = ["airflow.coutinho.local"]
+  default = []
 }
 
 variable "git_sync_enabled" {
@@ -85,7 +95,7 @@ variable "git_sync_branch" {
 
 variable "git_sync_period" {
   type    = string
-  default = "600s"
+  default = "60s"
 }
 
 variable "git_sync_rev" {
@@ -109,6 +119,11 @@ variable "git_sync_sub_path" {
 }
 
 variable "slack_token" {
+  type    = string
+  default = ""
+}
+
+variable "fernet_key" {
   type    = string
   default = ""
 }
