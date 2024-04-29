@@ -13,6 +13,11 @@ resource "helm_release" "airflow" {
   timeout          = 1500
 
   set {
+    name  = "defaultAirflowRepository"
+    value = var.airflow_repository
+  }
+
+  set {
     name  = "airflowVersion"
     value = var.airflow_version
   }
@@ -167,7 +172,7 @@ resource "helm_release" "airflow" {
     value = kubernetes_secret.my_certificate.metadata[0].name
   }
 
-  set {
+  /*   set {
     name  = "webserver.replicas"
     value = 2
   }
@@ -180,7 +185,7 @@ resource "helm_release" "airflow" {
   set {
     name  = "triggerer.replicas"
     value = 2
-  }
+  } */
 
   depends_on = [null_resource.wait_for_ingress_nginx]
 }
@@ -190,7 +195,7 @@ resource "kubernetes_namespace" "airflow" {
 
     name = "airflow"
   }
-  depends_on = [kind_cluster.default]
+  depends_on = [kind_cluster.local_cluster]
 }
 
 resource "kubernetes_secret" "ssh_key_secret" {

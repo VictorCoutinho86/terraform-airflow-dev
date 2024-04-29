@@ -28,7 +28,12 @@ variable "airflow_version" {
 
 variable "airflow_tag" {
   type    = string
-  default = "2.9.0-python3.12"
+  default = "2.9.0"
+}
+
+variable "airflow_repository" {
+  type    = string
+  default = "apache/airflow"
 }
 
 variable "airflow_chart_version" {

@@ -2,11 +2,11 @@ provider "kind" {
 }
 
 provider "kubernetes" {
-  host        = kind_cluster.default.endpoint
+  host        = kind_cluster.local_cluster.endpoint
   config_path = pathexpand(var.kind_cluster_config_path)
 }
 
-resource "kind_cluster" "default" {
+resource "kind_cluster" "local_cluster" {
   name           = var.kind_cluster_name
   wait_for_ready = true
   node_image     = var.node_image
@@ -30,12 +30,6 @@ resource "kind_cluster" "default" {
         container_port = 443
         host_port      = 443
       }
-    }
-    node {
-      role = "worker"
-    }
-    node {
-      role = "worker"
     }
   }
 }
