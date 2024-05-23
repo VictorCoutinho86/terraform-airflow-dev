@@ -12,7 +12,7 @@ variable "kind_cluster_config_path" {
 
 variable "node_image" {
   type    = string
-  default = "kindest/node:v1.29.2"
+  default = "kindest/node:v1.30.0"
 }
 
 variable "ingress_nginx_helm_version" {
@@ -78,9 +78,8 @@ variable "airflow_password" {
   default = "admin"
 }
 
-variable "airflow_hosts" {
-  type    = list(any)
-  default = []
+variable "airflow_host" {
+  type = string
 }
 
 variable "git_sync_enabled" {

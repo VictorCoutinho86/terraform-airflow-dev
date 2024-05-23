@@ -43,7 +43,7 @@ resource "helm_release" "airflow" {
 
   set_list {
     name  = "ingress.web.hosts"
-    value = var.airflow_hosts
+    value = [var.airflow_host]
   }
 
   set {
@@ -167,12 +167,12 @@ resource "helm_release" "airflow" {
     value = "True"
   }
 
-  set {
+  /* set {
     name  = "ingress.web.tls.enabled"
     value = kubernetes_secret.my_certificate.metadata[0].name
   }
 
-  /*   set {
+  set {
     name  = "webserver.replicas"
     value = 2
   }
@@ -248,16 +248,4 @@ resource "kubernetes_config_map" "extra_env" {
 
 resource "random_id" "webserver_secret_key" {
   byte_length = 16
-}
-
-resource "kubernetes_secret" "my_certificate" {
-  metadata {
-    name      = "certificate"
-    namespace = kubernetes_namespace.airflow.metadata[0].name
-  }
-  data = {
-    "tls.crt" = "${file("cert.pem")}"
-    "tls.key" = "${file("key.pem")}"
-  }
-  type = "kubernetes.io/tls"
 }
